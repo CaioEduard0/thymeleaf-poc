@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{base :: head}"></head>
+<body>
+    <div th:replace="~{base :: logo}"></div>
+    <div class="container">
+        <h1 class="text-center my-4">Produtos</h1>
+        <a class="btn btn-success mb-3" href="/products/create">Criar Produto</a>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.category.name}"></td>
+                        <td th:text="${product.description}"></td>
+                        <td th:text="@{'R$ ' + ${product.price}}"></td>
+                        <td style="white-space: nowrap">
+                            <a class="btn btn-primary btn-sm" th:href="@{'/products/update/' + ${product.id}}">Editar</a>
+                            <a class="btn btn-danger btn-sm" th:href="@{'/products/' + ${product.id}}" onclick="return confirm('Deseja realmente excluir o produto?')">Excluir</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
