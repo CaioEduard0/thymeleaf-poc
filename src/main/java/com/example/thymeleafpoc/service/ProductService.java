@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -45,5 +46,9 @@ public class ProductService {
     public void delete(Integer id) {
         Product product = find(id);
         PRODUCTS.remove(product);
+    }
+
+    public List<Product> find(String name) {
+        return PRODUCTS.stream().filter(product -> product.getName().contains(name)).toList();
     }
 }

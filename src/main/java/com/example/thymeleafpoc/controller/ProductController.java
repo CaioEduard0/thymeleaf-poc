@@ -26,6 +26,7 @@ public class ProductController {
     public String findAll(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
+        model.addAttribute("productDTO", new ProductDTO());
         return "product/list";
     }
 
@@ -65,5 +66,12 @@ public class ProductController {
     public String delete(@PathVariable Integer id) {
         productService.delete(id);
         return REDIRECT_PRODUCTS;
+    }
+
+    @GetMapping("/search-by-name")
+    public String find(Model model, @ModelAttribute ProductDTO productDTO) {
+        List<Product> products = productService.find(productDTO.getName());
+        model.addAttribute("products", products);
+        return "product/list";
     }
 }

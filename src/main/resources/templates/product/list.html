@@ -5,7 +5,17 @@
     <div th:replace="~{base :: logo}"></div>
     <div class="container">
         <h1 class="text-center my-4">Produtos</h1>
-        <a class="btn btn-success mb-3" href="/products/create">Criar Produto</a>
+        <div class="d-flex justify-content-between align-items-start">
+            <a class="btn btn-success" href="/products/create">Criar Produto</a>
+            <form action="/products/search-by-name" method="get" th:object="${productDTO}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Nome" th:field="${productDTO.name}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div>
             <table class="table">
                 <thead>
