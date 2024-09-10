@@ -31,6 +31,24 @@
                 </tbody>
             </table>
         </div>
+        <div th:if="${products.totalPages > 0}" class="pagination justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${!products.hasPrevious()} ? disabled">
+                        <a class="page-link" th:href="@{ /products(page=${products.number - 1}) }">Anterior</a>
+                    </li>
+
+                    <li class="page-item"  th:each="pageNumber : ${#numbers.sequence(1, products.totalPages)}"
+                        th:classappend="${pageNumber==products.number + 1} ? active">
+
+                        <a class="page-link " th:text="${pageNumber}"  th:href="@{ /products(page=${pageNumber - 1}) }"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!products.hasNext()} ? disabled">
+                        <a class="page-link" th:href="@{ /products(page=${products.number + 1}) }">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </body>
 </html>

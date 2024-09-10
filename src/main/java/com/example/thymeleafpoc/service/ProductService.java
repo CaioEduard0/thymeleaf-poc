@@ -3,6 +3,9 @@ package com.example.thymeleafpoc.service;
 import com.example.thymeleafpoc.dto.ProductDTO;
 import com.example.thymeleafpoc.enums.Category;
 import com.example.thymeleafpoc.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,13 +19,23 @@ public class ProductService {
     private static Integer ID = 10;
 
     static {
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 100; i++) {
             PRODUCTS.add(new Product(i, "Produto " + i, Category.ELECTRONICS, "Descrição do produto " + i, BigDecimal.valueOf(10000)));
         }
     }
 
     public List<Product> findAll() {
         return PRODUCTS;
+    }
+
+    public Page<Product> findAll(Pageable pageable) {
+        long initialOffset = pageable.getOffset();
+        long finalOffset = pageable.getOffset() + pageable.getPageSize();
+        List<Product> content = PRODUCTS.stream().filter(p ->
+                p.getId() >= initialOffset && p.getId() <= finalOffset).toList();
+
+        return new PageImpl<>(content, pageable, PRODUCTS.size());
+
     }
 
     public Product find(Integer id) {
