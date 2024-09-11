@@ -5,19 +5,19 @@ import com.example.thymeleafpoc.enums.Category;
 import com.example.thymeleafpoc.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
     private static final List<Product> PRODUCTS = new ArrayList<>();
-    private static Integer ID = 10;
+    private static Integer ID = 100;
 
     static {
         for (int i = 1; i <= 100; i++) {
@@ -25,18 +25,21 @@ public class ProductService {
         }
     }
 
-    public List<Product> findAll() {
-        return PRODUCTS;
-    }
-
-    public Page<Product> findAll(Pageable pageable) {
+    public Page<Product> findAll(int page, ProductDTO productDTO) {
+        Pageable pageable = PageRequest.of(page, 10);
         long initialOffset = pageable.getOffset();
         long finalOffset = pageable.getOffset() + pageable.getPageSize();
-        List<Product> content = PRODUCTS.stream().filter(p ->
-                p.getId() >= initialOffset && p.getId() <= finalOffset).toList();
-
+        List<Product> content;
+        if (productDTO.getName() == null) {
+            content = PRODUCTS;
+        } else {
+            content = PRODUCTS.stream().filter(product -> product.getName().contains(productDTO.getName())).toList();
+        }
+        if (content.size() < finalOffset) {
+            finalOffset = content.size();
+        }
+        content = content.subList((int) (initialOffset), (int) (finalOffset));
         return new PageImpl<>(content, pageable, PRODUCTS.size());
-
     }
 
     public Product find(Integer id) {
@@ -59,9 +62,5 @@ public class ProductService {
     public void delete(Integer id) {
         Product product = find(id);
         PRODUCTS.remove(product);
-    }
-
-    public List<Product> find(String name) {
-        return PRODUCTS.stream().filter(product -> product.getName().contains(name)).toList();
     }
 }
