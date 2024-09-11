@@ -5,17 +5,12 @@ import com.example.thymeleafpoc.mapper.ProductMapper;
 import com.example.thymeleafpoc.model.Product;
 import com.example.thymeleafpoc.service.ProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/products")
@@ -27,14 +22,10 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public String findAll(Model model, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-
-        Page<Product> products = productService.findAll(pageable);
-
-        System.out.println(products.getNumber());
-
+    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @ModelAttribute ProductDTO productDTO) {
+        Page<Product> products = productService.findAll(page, productDTO);
         model.addAttribute("products", products);
+        model.addAttribute("productDTO", new ProductDTO());
         return "product/list";
     }
 
