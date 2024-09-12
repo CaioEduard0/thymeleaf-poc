@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{base :: head}"></head>
+<body>
+    <div th:replace="~{base :: logo}"></div>
+    <div class="container">
+        <h1 class="text-center my-4">Clientes</h1>
+        <div class="d-flex justify-content-between align-items-start">
+            <a class="btn btn-success" href="/customer/create">Cadastrar Cliente</a>
+            <form action="/customer" method="get" th:object="${customerDTO}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar..." th:name="search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Data de nascimento</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="customer : ${customers.content}">
+                        <td th:text="${customer.name}"></td>
+                        <td th:text="${customer.email}"></td>
+                        <td th:text="${customer.birthDate}"></td>
+                        <td style="white-space: nowrap">
+                            <a class="btn btn-primary btn-sm" th:href="@{'/customer/update/' + ${customer.id}}">Editar</a>
+                            <a th:method="post" th:href="@{'/customer/' + ${customer.id}}" class="btn btn-danger btn-sm" th:onclick="return confirm('Deseja realmente excluir o cliente?')">Excluir</a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${customers.totalPages > 0}" class="pagination justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${!customers.hasPrevious()} ? disabled">
+                        <a class="page-link" th:href="@{/customer(page = ${customers.number - 1})}">Anterior</a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, customers.totalPages)}" th:classappend="${pageNumber == customers.number + 1} ? active">
+                        <a class="page-link" th:text="${pageNumber}" th:href="@{/customer(page = ${pageNumber - 1})}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!customers.hasNext()} ? disabled">
+                        <a class="page-link" th:href="@{/customer(page = ${customers.number + 1})}">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

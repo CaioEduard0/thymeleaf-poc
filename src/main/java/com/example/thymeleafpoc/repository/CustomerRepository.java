@@ -12,14 +12,21 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query(nativeQuery = true, value = """
         select * from customer
         where active is true
-        and name like '%?1%'
-        or email like '%?1%'
-        or birth_date like '%?1%'
+        and name like CONCAT('%', :search, '%')
+        or email like CONCAT('%', :search, '%')
+        or birth_date like CONCAT('%', :search, '%')
     """)
     Page<Customer> findAllBySearch(String search, Pageable pageable);
 
-    @Query(nativeQuery = true, value = """
-        update customer set active=false where id='?1'
+    @Query("""
+        select c from Customer c
+        where c.active=true
+    """)
+    @NonNull
+    Page<Customer> findAll(@NonNull Pageable pageable);
+
+    @Query(value = """
+        update Customer c set c.active=false where c.id=?1
     """)
     @Modifying
     void deleteById(@NonNull Long id);
