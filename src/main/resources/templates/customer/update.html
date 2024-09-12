@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{base :: head}"></head>
+<body>
+    <div th:replace="~{base :: logo}"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto rounded border p-4 m-4">
+                <h2 class="text-center mb-5">Editar Cliente</h2>
+
+                <form th:action="@{'/customer/' + ${id}}" th:method="put" th:object="${customerDTO}">
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">Nome</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" th:field="${customerDTO.name}">
+                            <p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="${customerDTO.name}"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">Email</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" th:field="${customerDTO.email}">
+                            <p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="${customerDTO.email}"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">Data de nascimento</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="date" th:field="${customerDTO.birthDate}">
+                            <p th:if="${#fields.hasErrors('birthDate')}" th:errorclass="text-danger" th:errors="${customerDTO.birthDate}"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-sm-4 col-sm-4 d-grid">
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <a class="btn btn-outline-danger" href="/customer" role="button">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
