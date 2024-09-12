@@ -11,7 +11,7 @@ spring:
         boot:
           allow_jdbc_metadata_access: false
   datasource:
-    url: jdbc:mysql://localhost:3306/root
+    url: jdbc:mysql://localhost:3306/thymeleaf
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

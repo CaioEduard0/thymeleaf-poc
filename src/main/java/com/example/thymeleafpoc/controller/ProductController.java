@@ -10,7 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/products")
@@ -45,7 +50,7 @@ public class ProductController {
     }
 
     @GetMapping("/update/{id}")
-    public String updatePage(Model model, @PathVariable Integer id) {
+    public String updatePage(Model model, @PathVariable Long id) {
         Product product = productService.find(id);
         model.addAttribute("id", id);
         model.addAttribute("productDTO", ProductMapper.toProductDTO(product));
@@ -53,7 +58,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable Integer id, @ModelAttribute @Valid ProductDTO productDTO, BindingResult bindingResult) {
+    public String update(@PathVariable Long id, @ModelAttribute @Valid ProductDTO productDTO, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             return "product/update";
         }
@@ -62,7 +67,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String delete(@PathVariable Integer id) {
+    public String delete(@PathVariable Long id) {
         productService.delete(id);
         return REDIRECT_PRODUCTS;
     }
