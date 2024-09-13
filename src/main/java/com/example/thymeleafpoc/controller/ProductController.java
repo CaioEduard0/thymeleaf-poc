@@ -7,6 +7,7 @@ import com.example.thymeleafpoc.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/products")
@@ -28,9 +34,11 @@ public class ProductController {
 
     @GetMapping
     public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @ModelAttribute ProductDTO productDTO) {
+//        List<Long> cart = new ArrayList<>();
         Page<Product> products = productService.findAll(page, productDTO);
         model.addAttribute("products", products);
         model.addAttribute("productDTO", new ProductDTO());
+//        model.addAttribute("cart", cart);
         return "product/list";
     }
 

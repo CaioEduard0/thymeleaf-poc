@@ -9,6 +9,6 @@ public class CustomerMapper {
     }
 
     public static Customer toCustomer(CustomerDTO customerDTO) {
-        return new Customer(customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), customerDTO.isActive());
+        return new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), customerDTO.isActive());
     }
 }

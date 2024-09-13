@@ -15,6 +15,7 @@
                     </div>
                 </div>
             </form>
+            <a class="btn btn-warning" th:href="@{/orders/checkout}">Checkout</a>
         </div>
         <div>
             <table class="table">
@@ -25,6 +26,7 @@
                         <th>Descrição</th>
                         <th>Preço</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +35,7 @@
                         <td th:text="${product.category.name}"></td>
                         <td th:text="${product.description}"></td>
                         <td th:text="@{'R$ ' + ${product.price}}"></td>
+                        <td><a class="btn btn-success btn-sm" th:href="@{/orders/add-to-cart(id = ${product.id})}">Adicionar ao Carrinho</a></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm" th:href="@{'/products/update/' + ${product.id}}">Editar</a>
                             <a class="btn btn-danger btn-sm" th:href="@{'/products/' + ${product.id}}" onclick="return confirm('Deseja realmente excluir o produto?')">Excluir</a>
@@ -58,4 +61,16 @@
         </div>
     </div>
 </body>
+<!--<script th:inline="javascript">-->
+<!--    function test(id) {-->
+<!--        // var number = [[${number}]];-->
+<!--        // var cart = "[[${cart}]]";-->
+<!--        var xxx = [[${cart}]];-->
+<!--        xxx.push(id);-->
+<!--        // cart.add(id);-->
+<!--        // var cart = [[${cart}]];-->
+<!--        // cart.push(id);-->
+<!--        alert("cart values: " + xxx.toString() + "id value: " + id);-->
+<!--    }-->
+<!--</script>-->
 </html>

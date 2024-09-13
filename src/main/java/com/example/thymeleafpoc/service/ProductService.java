@@ -6,7 +6,10 @@ import com.example.thymeleafpoc.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +18,15 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public Page<Product> findAll(int page, ProductDTO productDTO) {
-        return productRepository.findAll(PageRequest.of(page, 10));
+        Pageable pageable = PageRequest.of(page, 10);
+        if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
+            return productRepository.findAll(pageable);
+        }
+        return productRepository.findByNameContaining(pageable, productDTO.getName());
+    }
+
+    public List<Product> findAll(List<Long> ids) {
+        return productRepository.findAllById(ids);
     }
 
     public Product find(Long id) {
