@@ -38,11 +38,12 @@ public class OrderController {
     private final ProductService productService;
 
     @GetMapping("/add-to-cart")
-    public String addToCart(Model model, @RequestParam Long id, @ModelAttribute ProductDTO productDTO) {
+    public String addToCart(Model model, @RequestParam Long id, @RequestParam(defaultValue = "") String search) {
         cart.add(id);
-        Page<Product> products = productService.findAll(0, productDTO);
+        Page<Product> products = productService.findAll(0, search);
         model.addAttribute("products", products);
-        model.addAttribute("productDTO", productDTO);
+        model.addAttribute("productDTO", new ProductDTO());
+        model.addAttribute("search", search);
         return "product/list";
     }
 

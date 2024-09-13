@@ -33,9 +33,9 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @ModelAttribute ProductDTO productDTO) {
+    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
 //        List<Long> cart = new ArrayList<>();
-        Page<Product> products = productService.findAll(page, productDTO);
+        Page<Product> products = productService.findAll(page, search);
         model.addAttribute("products", products);
         model.addAttribute("productDTO", new ProductDTO());
 //        model.addAttribute("cart", cart);

@@ -9,7 +9,7 @@
             <a class="btn btn-success" href="/products/create">Criar Produto</a>
             <form action="/products" method="get" th:object="${productDTO}">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Nome" th:field="${productDTO.name}">
+                    <input type="text" class="form-control" placeholder="Pesquisar..." th:name="search">
                     <div class="input-group-append">
                         <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
                     </div>
