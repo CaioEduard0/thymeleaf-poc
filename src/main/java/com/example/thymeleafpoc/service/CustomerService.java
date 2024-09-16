@@ -1,7 +1,6 @@
 package com.example.thymeleafpoc.service;
 
 import com.example.thymeleafpoc.dto.CustomerDTO;
-import com.example.thymeleafpoc.mapper.CustomerMapper;
 import com.example.thymeleafpoc.model.Customer;
 import com.example.thymeleafpoc.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class CustomerService {
     }
 
     public Customer save(CustomerDTO customerDTO) {
-        return customerRepository.save(new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), true));
+        return customerRepository.save(new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), null, true));
     }
 
     public Customer update(Long id, CustomerDTO customerDTO) {
