@@ -4,6 +4,7 @@ import com.example.thymeleafpoc.dto.CustomerDTO;
 import com.example.thymeleafpoc.mapper.CustomerMapper;
 import com.example.thymeleafpoc.model.Customer;
 import com.example.thymeleafpoc.service.CustomerService;
+import com.example.thymeleafpoc.utils.PageUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/customer")
@@ -27,6 +30,7 @@ public class CustomerController {
         Page<Customer> customers = customerService.findAll(pageable, search);
         model.addAttribute("customers", customers);
         model.addAttribute("customerDTO", new CustomerDTO());
+        PageUtils.formatPages(customers, model);
         return "customer/list";
     }
 
@@ -65,5 +69,12 @@ public class CustomerController {
     public String delete(@PathVariable Long id) {
         customerService.delete(id);
         return REDIRECT_CUSTOMER;
+    }
+
+    @PostMapping("/load-db")
+    public void loadDB() {
+        for (int i = 0; i<10000; i++) {
+            customerService.save(new CustomerDTO("User "+ i, "email@user"+ i, LocalDate.of(2021, 12, 11), true));
+        }
     }
 }
