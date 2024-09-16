@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -33,8 +32,7 @@ public class Customer {
     private String email;
     @NonNull
     private LocalDate birthDate;
-//    @NonNull
-    @OneToMany(mappedBy="customer")
-    private final Set<Order> orders = new HashSet<>();
+    @OneToMany(mappedBy = "customer")
+    private Set<Order> orders;
     private boolean active;
 }

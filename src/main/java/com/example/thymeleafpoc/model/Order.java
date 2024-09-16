@@ -1,6 +1,5 @@
 package com.example.thymeleafpoc.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +17,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -35,7 +33,7 @@ public class Order {
     @CreationTimestamp
     private Instant createdAt;
     private BigDecimal total;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name="customer_id", nullable = false)
     private Customer customer;
     @ManyToMany
