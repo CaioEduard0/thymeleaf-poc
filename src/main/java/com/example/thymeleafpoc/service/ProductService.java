@@ -25,6 +25,14 @@ public class ProductService {
         return productRepository.findBySearch(search, pageable);
     }
 
+    public Page<Product> findAll(int page, ProductDTO productDTO) {
+        Pageable pageable = PageRequest.of(page, 10);
+        if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
+            return productRepository.findAll(pageable);
+        }
+        return productRepository.findByNameContaining(pageable, productDTO.getName());
+    }
+
     public List<Product> findAll(List<Long> ids) {
         return productRepository.findAllById(ids);
     }

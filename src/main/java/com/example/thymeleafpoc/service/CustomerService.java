@@ -27,7 +27,7 @@ public class CustomerService {
     }
 
     public Customer save(CustomerDTO customerDTO) {
-        return customerRepository.save(new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), true));
+        return customerRepository.save(new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), null, true));
     }
 
     public Customer update(Long id, CustomerDTO customerDTO) {
