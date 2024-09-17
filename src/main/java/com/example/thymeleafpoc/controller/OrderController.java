@@ -8,6 +8,7 @@ import com.example.thymeleafpoc.model.Product;
 import com.example.thymeleafpoc.service.CustomerService;
 import com.example.thymeleafpoc.service.OrderService;
 import com.example.thymeleafpoc.service.ProductService;
+import com.example.thymeleafpoc.utils.PageUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,7 @@ public class OrderController {
     public String findAll(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<Order> orders = orderService.findAll(page);
         model.addAttribute("orders", orders);
+        PageUtils.formatPages(orders, model);
         return "order/list";
     }
 

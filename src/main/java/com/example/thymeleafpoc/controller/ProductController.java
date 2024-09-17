@@ -4,6 +4,7 @@ import com.example.thymeleafpoc.dto.ProductDTO;
 import com.example.thymeleafpoc.mapper.ProductMapper;
 import com.example.thymeleafpoc.model.Product;
 import com.example.thymeleafpoc.service.ProductService;
+import com.example.thymeleafpoc.utils.PageUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class ProductController {
         Page<Product> products = productService.findAll(page, productDTO);
         model.addAttribute("products", products);
         model.addAttribute("productDTO", new ProductDTO());
+        PageUtils.formatPages(products, model);
         return "product/list";
     }
 
