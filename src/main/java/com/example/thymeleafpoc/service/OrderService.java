@@ -28,7 +28,7 @@ public class OrderService {
 
     public void save(OrderDTO orderDTO) {
         Order order = new Order();
-        Customer customer = customerService.findById(orderDTO.getCustomerId());
+        Customer customer = customerService.find(orderDTO.getCustomerId());
         order.setCustomer(customer);
         List<Product> products = productService.findAll(orderDTO.getProductsIds());
         BigDecimal total = products.stream().map(Product::getPrice)
