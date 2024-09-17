@@ -28,10 +28,9 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @ModelAttribute ProductDTO productDTO) {
-        Page<Product> products = productService.findAll(page, productDTO);
+    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
+        Page<Product> products = productService.findAll(page, search);
         model.addAttribute("products", products);
-        model.addAttribute("productDTO", new ProductDTO());
         PageUtils.formatPages(products, model);
         return "product/list";
     }

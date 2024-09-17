@@ -3,6 +3,7 @@ package com.example.thymeleafpoc.service;
 import com.example.thymeleafpoc.dto.ProductDTO;
 import com.example.thymeleafpoc.model.Product;
 import com.example.thymeleafpoc.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,15 +23,7 @@ public class ProductService {
         if (search == null || search.isEmpty()) {
             return productRepository.findAll(pageable);
         }
-        return productRepository.findBySearch(search, pageable);
-    }
-
-    public Page<Product> findAll(int page, ProductDTO productDTO) {
-        Pageable pageable = PageRequest.of(page, 10);
-        if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
-            return productRepository.findAll(pageable);
-        }
-        return productRepository.findByNameContaining(pageable, productDTO.getName());
+        return productRepository.findAll(search, pageable);
     }
 
     public List<Product> findAll(List<Long> ids) {
@@ -41,10 +34,12 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void save(ProductDTO productDTO) {
         productRepository.save(new Product(null, productDTO.getName(), productDTO.getCategory(), productDTO.getDescription(), productDTO.getPrice(), true));
     }
 
+    @Transactional
     public void update(Long id, ProductDTO productDTO) {
         Product product = find(id);
         product.setName(productDTO.getName());
@@ -54,7 +49,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    @Transactional
     public void delete(Long id) {
-        productRepository.deleteById(id);
+        productRepository.delete(id);
     }
 }

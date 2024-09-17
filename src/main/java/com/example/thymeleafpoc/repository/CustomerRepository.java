@@ -10,11 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query(nativeQuery = true, value = """
-        select * from customer
+        select id, name, email, birth_date, active
+        from customer
         where active is true
-        and name like CONCAT('%', :search, '%')
+        and (name like CONCAT('%', :search, '%')
         or email like CONCAT('%', :search, '%')
-        or birth_date like CONCAT('%', :search, '%')
+        or birth_date like CONCAT('%', :search, '%'))
     """)
     Page<Customer> findAllBySearch(String search, Pageable pageable);
 

@@ -1,7 +1,6 @@
 package com.example.thymeleafpoc.controller;
 
 import com.example.thymeleafpoc.dto.OrderDTO;
-import com.example.thymeleafpoc.dto.ProductDTO;
 import com.example.thymeleafpoc.model.Customer;
 import com.example.thymeleafpoc.model.Order;
 import com.example.thymeleafpoc.model.Product;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +47,7 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Customer> customers = customerService.findAll(pageable, search);
         model.addAttribute("customers", customers);
+        PageUtils.formatPages(customers, model);
         return "order/customer";
     }
 
@@ -57,36 +56,36 @@ public class OrderController {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setCustomerId(id);
         session.setAttribute("orderDTO", orderDTO);
-        fillInModelWithProducts(model, 0, new ProductDTO());
+        fillInModelWithProducts(model, 0, "");
         return ORDER_PRODUCT_PAGE;
     }
 
     @GetMapping("/products")
-    public String selectProducts(Model model, @RequestParam(defaultValue = "0") int page, @ModelAttribute ProductDTO productDTO) {
-        fillInModelWithProducts(model, page, productDTO);
+    public String selectProducts(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
+        fillInModelWithProducts(model, page, search);
         return ORDER_PRODUCT_PAGE;
     }
 
     @GetMapping("/products/add-to-cart")
-    public String addToCart(Model model, @RequestParam Long id, @ModelAttribute ProductDTO productDTO, HttpSession session) {
+    public String addToCart(Model model, @RequestParam Long id, HttpSession session) {
         OrderDTO orderDTO = (OrderDTO) session.getAttribute("orderDTO");
         orderDTO.getProductsIds().add(id);
-        fillInModelWithProducts(model, 0, productDTO);
+        fillInModelWithProducts(model, 0, "");
         return ORDER_PRODUCT_PAGE;
     }
 
     @GetMapping("/products/remove-from-cart")
-    public String removeFromCart(Model model, @RequestParam Long id, @ModelAttribute ProductDTO productDTO, HttpSession session) {
+    public String removeFromCart(Model model, @RequestParam Long id, HttpSession session) {
         OrderDTO orderDTO = (OrderDTO) session.getAttribute("orderDTO");
         orderDTO.getProductsIds().remove(id);
-        fillInModelWithProducts(model, 0, productDTO);
+        fillInModelWithProducts(model, 0, "");
         return ORDER_PRODUCT_PAGE;
     }
 
-    private void fillInModelWithProducts(Model model, int page, ProductDTO productDTO) {
-        Page<Product> products = productService.findAll(page, productDTO);
+    private void fillInModelWithProducts(Model model, int page, String search) {
+        Page<Product> products = productService.findAll(page, search);
         model.addAttribute("products", products);
-        model.addAttribute("productDTO", productDTO);
+        PageUtils.formatPages(products, model);
     }
 
     @GetMapping("/checkout")

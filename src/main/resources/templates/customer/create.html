@@ -8,7 +8,7 @@
             <div class="col-md-8 mx-auto rounded border p-4 m-4">
                 <h2 class="text-center mb-5">Cadastrar Cliente</h2>
 
-                <form action="/customer" method="post" th:object="${customerDTO}">
+                <form action="/customers" method="post" th:object="${customerDTO}">
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Nome</label>
                         <div class="col-sm-8">
@@ -35,7 +35,7 @@
                             <button type="submit" class="btn btn-success">Cadastrar</button>
                         </div>
                         <div class="col-sm-4 d-grid">
-                            <a class="btn btn-outline-danger" href="/customer" role="button">Cancelar</a>
+                            <a class="btn btn-outline-danger" href="/customers" role="button">Cancelar</a>
                         </div>
                     </div>
                 </form>

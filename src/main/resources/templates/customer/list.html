@@ -4,10 +4,10 @@
 <body>
     <div th:replace="~{base :: logo}"></div>
     <div class="container">
-        <h1 class="text-center my-4">Clientes</h1>
-        <div class="d-flex justify-content-between align-items-start">
-            <a class="btn btn-success" href="/customer/create">Cadastrar Cliente</a>
-            <form action="/customer" method="get" th:object="${customerDTO}">
+        <h1 class="text-center my-5">Clientes</h1>
+        <div class="d-flex justify-content-between align-items-start mb-5">
+            <a class="btn btn-success" href="/customers/create">Cadastrar Cliente</a>
+            <form action="/customers" method="get">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Pesquisar..." th:name="search">
                     <div class="input-group-append">
@@ -30,17 +30,16 @@
                     <tr th:each="customer : ${customers.content}">
                         <td th:text="${customer.name}"></td>
                         <td th:text="${customer.email}"></td>
-                        <td th:text="${customer.birthDate}"></td>
+                        <td th:text="${#temporals.format(customer.birthDate, 'dd/MM/yyyy')}"></td>
                         <td style="white-space: nowrap">
-                            <a class="btn btn-primary btn-sm" th:href="@{'/customer/update/' + ${customer.id}}">Editar</a>
-                            <a th:method="post" th:href="@{'/customer/' + ${customer.id}}" class="btn btn-danger btn-sm" th:onclick="return confirm('Deseja realmente excluir o cliente?')">Excluir</a>
-
+                            <a class="btn btn-primary btn-sm" th:href="@{'/customers/update/' + ${customer.id}}">Editar</a>
+                            <a th:method="post" th:href="@{'/customers/' + ${customer.id}}" class="btn btn-danger btn-sm" th:onclick="return confirm('Deseja realmente excluir o cliente?')">Excluir</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div th:replace="~{base :: pagination(currentPage=${currentPage}, firstPageToShow=${firstPageToShow}, lastPageToShow=${lastPageToShow}, hasPrevious=${hasPrevious}, hasNext=${hasNext}, pageToRedirect='/customer')}"></div>
+        <div th:replace="~{base :: pagination(currentPage=${currentPage}, firstPageToShow=${firstPageToShow}, lastPageToShow=${lastPageToShow}, hasPrevious=${hasPrevious}, hasNext=${hasNext}, pageToRedirect='/customers')}"></div>
     </div>
 </body>
 </html>
