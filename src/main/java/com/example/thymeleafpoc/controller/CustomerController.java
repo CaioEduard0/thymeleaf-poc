@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 public class CustomerController {
-    private static final String REDIRECT_CUSTOMER = "redirect:/customer";
+    private static final String REDIRECT_CUSTOMER = "redirect:/customers";
     private final CustomerService customerService;
 
     @GetMapping
@@ -29,7 +29,6 @@ public class CustomerController {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Customer> customers = customerService.findAll(pageable, search);
         model.addAttribute("customers", customers);
-        model.addAttribute("customerDTO", new CustomerDTO());
         PageUtils.formatPages(customers, model);
         return "customer/list";
     }
