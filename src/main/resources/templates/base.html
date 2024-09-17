@@ -18,3 +18,19 @@
 <div th:fragment="logo" class="logo-container mb-3 p-3 d-flex justify-content-between">
     <span class="logo">Thymeleaf POC</span>
 </div>
+
+<div th:fragment="pagination(currentPage, firstPageToShow, lastPageToShow, hasPrevious, hasNext, pageToRedirect)" class="pagination justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!hasPrevious} ? disabled">
+                <a class="page-link" th:href="@{(${pageToRedirect})(page = ${currentPage - 1})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(firstPageToShow+1, lastPageToShow)}" th:classappend="${pageNumber == currentPage + 1} ? active">
+                <a class="page-link" th:text="${pageNumber}" th:href="@{(${pageToRedirect})(page = ${pageNumber - 1})}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!hasNext} ? disabled">
+                <a class="page-link" th:href="@{(${pageToRedirect})(page = ${currentPage + 1})}">Próximo</a>
+            </li>
+        </ul>
+    </nav>
+</div>

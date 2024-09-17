@@ -22,7 +22,7 @@ public class CustomerService {
         return customerRepository.findAllBySearch(search, pageable);
     }
 
-    public Customer findById(Long id) {
+    public Customer find(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
 
@@ -43,7 +43,7 @@ public class CustomerService {
 
     }
 
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         customerRepository.deleteById(id);
     }
 

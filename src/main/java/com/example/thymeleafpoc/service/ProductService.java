@@ -17,6 +17,14 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    public Page<Product> findAll(int page, String search) {
+        Pageable pageable = PageRequest.of(page, 10);
+        if (search == null || search.isEmpty()) {
+            return productRepository.findAll(pageable);
+        }
+        return productRepository.findBySearch(search, pageable);
+    }
+
     public Page<Product> findAll(int page, ProductDTO productDTO) {
         Pageable pageable = PageRequest.of(page, 10);
         if (productDTO.getName() == null || productDTO.getName().isEmpty()) {

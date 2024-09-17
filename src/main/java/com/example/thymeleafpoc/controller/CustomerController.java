@@ -4,6 +4,7 @@ import com.example.thymeleafpoc.dto.CustomerDTO;
 import com.example.thymeleafpoc.mapper.CustomerMapper;
 import com.example.thymeleafpoc.model.Customer;
 import com.example.thymeleafpoc.service.CustomerService;
+import com.example.thymeleafpoc.utils.PageUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Controller
 @RequestMapping("/customer")
 @RequiredArgsConstructor
@@ -22,21 +25,22 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public String getCustomers(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
+    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Customer> customers = customerService.findAll(pageable, search);
         model.addAttribute("customers", customers);
         model.addAttribute("customerDTO", new CustomerDTO());
+        PageUtils.formatPages(customers, model);
         return "customer/list";
     }
 
     @GetMapping("/create")
-    public String createCustomer(Model model) {
+    public String createPage(Model model) {
         model.addAttribute("customerDTO", new CustomerDTO());
         return "customer/create";
     }
     @PostMapping
-    public String saveCustomer(@ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
+    public String save(@ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
             return "customer/create";
@@ -46,14 +50,14 @@ public class CustomerController {
     }
 
     @GetMapping("/update/{id}")
-    public String updateCustomer(@PathVariable Long id, Model model) {
-        CustomerDTO customerDTO = CustomerMapper.toCustomerDTO(customerService.findById(id));
+    public String updatePage(@PathVariable Long id, Model model) {
+        CustomerDTO customerDTO = CustomerMapper.toCustomerDTO(customerService.find(id));
         model.addAttribute("customerDTO", customerDTO);
         model.addAttribute("id", id);
         return "customer/update";
     }
     @PutMapping("/{id}")
-    public String updateCustomer(@PathVariable Long id, @ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
+    public String update(@PathVariable Long id, @ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "customer/update";
 
@@ -62,8 +66,15 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public String deleteCustomer(@PathVariable Long id) {
-        customerService.deleteById(id);
+    public String delete(@PathVariable Long id) {
+        customerService.delete(id);
         return REDIRECT_CUSTOMER;
+    }
+
+    @PostMapping("/load-db")
+    public void loadDB() {
+        for (int i = 0; i<10000; i++) {
+            customerService.save(new CustomerDTO("User "+ i, "email@user"+ i, LocalDate.of(2021, 12, 11), true));
+        }
     }
 }
