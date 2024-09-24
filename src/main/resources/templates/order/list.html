@@ -1,27 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{base :: head}"></head>
 <body>
     <div th:replace="~{base :: logo}"></div>
     <div class="container">
-        <h1 class="text-center my-5">Vendas</h1>
-        <div class="d-flex justify-content-between align-items-start mb-5">
-            <a class="btn btn-success" href="/orders/customers">Realizar Venda</a>
+        <h1 th:if="${#strings.equals(authority, 'ADMIN')}" class="text-center my-5">Vendas</h1>
+        <h1 th:if="${#strings.equals(authority, 'USER')}" class="text-center my-5">Minhas Compras</h1>
+        <div class="d-flex justify-content-end align-items-start mb-5">
+            <a class="btn btn-outline-danger" th:href="@{/}">Voltar</a>
         </div>
         <div>
             <table class="table">
                 <thead>
                     <tr>
                         <th>Data - Hora</th>
-                        <th>Cliente</th>
+                        <th th:if="${#strings.equals(authority, 'ADMIN')}">Cliente</th>
                         <th>Total</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="order : ${orders}">
                         <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy - HH:mm')}"></td>
-                        <td th:text="${order.customer.name}"></td>
+                        <td th:if="${#strings.equals(authority, 'ADMIN')}" th:text="${order.customer.name}"></td>
                         <td th:text="${#strings.replace(#numbers.formatCurrency(order.total), '$', 'R$ ')}"></td>
+                        <td><a class="btn btn-primary btn-sm" th:href="@{'/orders/' + ${order.id} + '/products'}">Ver Produtos</a></td>
                     </tr>
                 </tbody>
             </table>

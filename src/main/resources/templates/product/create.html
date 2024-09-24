@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{base :: head}"></head>
 <body>
     <div th:replace="~{base :: logo}"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-8 mx-auto rounded border p-4 m-4">
-                <h2 class="text-center mb-5">Criar Produto</h2>
-
-                <form action="/products" method="post" th:object="${productDTO}">
+                <h2 class="text-center mb-5">Cadastrar Produto</h2>
+                <form th:action="@{/products}" th:method="post" th:object="${productDTO}">
                     <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label">Nome</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 col-form-label">Nome</label>
+                        <div class="col-sm-10">
                             <input class="form-control" th:field="${productDTO.name}">
                             <p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="${productDTO.name}"></p>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label">Categoria</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 col-form-label">Categoria</label>
+                        <div class="col-sm-10">
                             <select class="form-select" th:field="${productDTO.category}">
                                 <option value="ELECTRONICS">Eletrônicos</option>
                                 <option value="CLOTHES">Roupas</option>
@@ -28,24 +27,24 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label">Descrição</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 col-form-label">Descrição</label>
+                        <div class="col-sm-10">
                             <input class="form-control" th:field="${productDTO.description}">
                             <p th:if="${#fields.hasErrors('description')}" th:errorclass="text-danger" th:errors="${productDTO.description}"></p>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label">Preço</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 col-form-label">Preço</label>
+                        <div class="col-sm-10">
                             <input class="form-control" type="number" step="0.01" min="0" th:field="${productDTO.price}">
                             <p th:if="${#fields.hasErrors('price')}" th:errorclass="text-danger" th:errors="${productDTO.price}"></p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="offset-sm-4 col-sm-4 d-grid">
-                            <button type="submit" class="btn btn-success">Criar</button>
+                        <div class="offset-sm-2 col-sm-5 d-grid">
+                            <button type="submit" class="btn btn-success">Cadastrar</button>
                         </div>
-                        <div class="col-sm-4 d-grid">
+                        <div class="col-sm-5 d-grid">
                             <a class="btn btn-outline-danger" href="/products" role="button">Cancelar</a>
                         </div>
                     </div>

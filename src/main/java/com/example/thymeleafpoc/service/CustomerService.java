@@ -2,10 +2,10 @@ package com.example.thymeleafpoc.service;
 
 import com.example.thymeleafpoc.dto.CustomerDTO;
 import com.example.thymeleafpoc.model.Customer;
+import com.example.thymeleafpoc.model.User;
 import com.example.thymeleafpoc.repository.CustomerRepository;
+import com.example.thymeleafpoc.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,38 +13,22 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-
-    public Page<Customer> findAll(Pageable pageable, String search) {
-
-        if (search == null || search.isEmpty())
-            return customerRepository.findAll(pageable);
-
-        return customerRepository.findAllBySearch(search, pageable);
-    }
+    private final UserRepository userRepository;
 
     public Customer find(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
 
-    public Customer save(CustomerDTO customerDTO) {
-        return customerRepository.save(new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getBirthDate(), null, true));
+    public void save(CustomerDTO customerDTO, User user) {
+        Customer customer = Customer.builder()
+                                    .name(customerDTO.getName())
+                                    .birthDate(customerDTO.getBirthDate())
+                                    .cpf(customerDTO.getCpf())
+                                    .phone(customerDTO.getPhone())
+                                    .address(customerDTO.getAddress())
+                                    .user(user)
+                                    .build();
+        user.setCustomer(customer);
+        userRepository.save(user);
     }
-
-    public Customer update(Long id, CustomerDTO customerDTO) {
-        Customer customer = customerRepository.findById(id).orElse(null);
-        if (customer == null)
-            return null;
-
-        customer.setName(customerDTO.getName());
-        customer.setEmail(customerDTO.getEmail());
-        customer.setBirthDate(customerDTO.getBirthDate());
-
-        return customerRepository.save(customer);
-
-    }
-
-    public void delete(Long id) {
-        customerRepository.deleteById(id);
-    }
-
 }

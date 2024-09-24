@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{base :: head}"></head>
 <body>
     <div th:replace="~{base :: logo}"></div>
     <div class="container">
         <h1 class="text-center my-5">Produtos</h1>
         <div class="d-flex justify-content-between align-items-start mb-5">
-            <a class="btn btn-success" href="/products/create">Criar Produto</a>
+            <a th:if="${#strings.equals(authority, 'ADMIN')}" class="btn btn-success" href="/products/create">Cadastrar</a>
             <form action="/products" method="get">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Pesquisar..." th:name="search">
@@ -15,6 +15,8 @@
                     </div>
                 </div>
             </form>
+            <a th:if="${#strings.equals(authority, 'USER')}" class="btn btn-warning" th:href="@{/orders/checkout}">Checkout</a>
+            <a class="btn btn-outline-danger" th:href="@{/}">Voltar</a>
         </div>
         <div>
             <table class="table">
@@ -24,7 +26,10 @@
                         <th>Categoria</th>
                         <th>Descrição</th>
                         <th>Preço</th>
-                        <th></th>
+                        <th th:if="${#strings.equals(authority, 'USER')}">Carrinho</th>
+                        <th th:if="${#strings.equals(authority, 'ADMIN')}">Data de criação</th>
+                        <th th:if="${#strings.equals(authority, 'ADMIN')}">Data de atualização</th>
+                        <th th:if="${#strings.equals(authority, 'ADMIN')}"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,9 +38,24 @@
                         <td th:text="${product.category.name}"></td>
                         <td th:text="${product.description}"></td>
                         <td th:text="${#strings.replace(#numbers.formatCurrency(product.price), '$', 'R$ ')}"></td>
+                        <td th:if="${#strings.equals(authority, 'ADMIN')}" th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy - HH:mm')}"></td>
+                        <td th:if="${#strings.equals(authority, 'ADMIN')}" th:text="${#temporals.format(product.updatedAt, 'dd/MM/yyyy - HH:mm')}"></td>
                         <td style="white-space: nowrap">
-                            <a class="btn btn-primary btn-sm" th:href="@{'/products/update/' + ${product.id}}">Editar</a>
-                            <a class="btn btn-danger btn-sm" th:href="@{'/products/' + ${product.id}}" onclick="return confirm('Deseja realmente excluir o produto?')">Excluir</a>
+                            <a th:if="${#strings.equals(authority, 'ADMIN')}"
+                               class="btn btn-primary btn-sm"
+                               th:href="@{'/products/update/' + ${product.id}}">Editar</a>
+                            <a th:if="${#strings.equals(authority, 'ADMIN')}"
+                               class="btn btn-danger btn-sm"
+                               th:href="@{'/products/' + ${product.id}}"
+                               onclick="return confirm('Deseja realmente desativar o produto?')">Desativar</a>
+                            <a th:if="${#strings.equals(authority, 'USER')}"
+                               class="btn btn-success btn-sm"
+                               th:href="@{'/products/' + ${product.id} + '/add-to-cart'}"
+                               onclick="return alert('Produto adicionado ao carrinho com sucesso!')">Adicionar</a>
+                            <a th:if="${#strings.equals(authority, 'USER')}"
+                               class="btn btn-danger btn-sm"
+                               th:href="@{'/products/' + ${product.id} + '/remove-from-cart'}"
+                               onclick="return alert('Produto retirado do carrinho com sucesso!')">Retirar</a>
                         </td>
                     </tr>
                 </tbody>

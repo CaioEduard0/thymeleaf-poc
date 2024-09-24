@@ -1,79 +1,38 @@
 package com.example.thymeleafpoc.controller;
 
 import com.example.thymeleafpoc.dto.CustomerDTO;
-import com.example.thymeleafpoc.mapper.CustomerMapper;
-import com.example.thymeleafpoc.model.Customer;
+import com.example.thymeleafpoc.model.User;
 import com.example.thymeleafpoc.service.CustomerService;
-import com.example.thymeleafpoc.utils.PageUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/customers")
 @RequiredArgsConstructor
 public class CustomerController {
-    private static final String REDIRECT_CUSTOMER = "redirect:/customers";
-    private final CustomerService customerService;
 
-    @GetMapping
-    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<Customer> customers = customerService.findAll(pageable, search);
-        model.addAttribute("customers", customers);
-        PageUtils.formatPages(customers, model);
-        return "customer/list";
-    }
+    private final CustomerService customerService;
 
     @GetMapping("/create")
     public String createPage(Model model) {
         model.addAttribute("customerDTO", new CustomerDTO());
         return "customer/create";
     }
+
     @PostMapping
-    public String save(@ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors())
+    public String save(@ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult, @AuthenticationPrincipal User user) {
+        if (bindingResult.hasErrors()) {
             return "customer/create";
-
-        Customer customer = customerService.save(customerDTO);
-        return REDIRECT_CUSTOMER;
-    }
-
-    @GetMapping("/update/{id}")
-    public String updatePage(@PathVariable Long id, Model model) {
-        CustomerDTO customerDTO = CustomerMapper.toCustomerDTO(customerService.find(id));
-        model.addAttribute("customerDTO", customerDTO);
-        model.addAttribute("id", id);
-        return "customer/update";
-    }
-    @PutMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "customer/update";
-
-        customerService.update(id, customerDTO);
-        return REDIRECT_CUSTOMER;
-    }
-
-    @GetMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        customerService.delete(id);
-        return REDIRECT_CUSTOMER;
-    }
-
-    @PostMapping("/load-db")
-    public void loadDB() {
-        for (int i = 0; i<10000; i++) {
-            customerService.save(new CustomerDTO("User "+ i, "email@user"+ i, LocalDate.of(2021, 12, 11), true));
         }
+        customerService.save(customerDTO, user);
+        return "redirect:/orders/checkout";
     }
 }
