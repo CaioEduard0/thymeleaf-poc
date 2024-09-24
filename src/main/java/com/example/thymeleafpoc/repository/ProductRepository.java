@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(nativeQuery = true, value = """
-        select id, name, category, description, price, active
+        select id, name, category, description, price, created_at, updated_at, active
         from product
         where active is true
         and (name like CONCAT('%', :search, '%')

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{base :: head}"></head>
+<body>
+    <div th:replace="~{base :: logo}"></div>
+    <div class="container">
+        <h1 class="text-center my-5">Usuários</h1>
+        <div class="d-flex justify-content-between align-items-start mb-5">
+            <form action="/users" method="get">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar..." th:name="search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+                    </div>
+                </div>
+            </form>
+            <a class="btn btn-outline-danger" href="/">Voltar</a>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>E-mail</th>
+                        <th>Permissão</th>
+                        <th>Data de criação</th>
+                        <th>Data de atualização</th>
+                        <th>Ativo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.email}"></td>
+                        <td>
+                            <span th:if="${user.authorities.stream().findFirst().get().getAuthority() == 'USER'}">Usuário</span>
+                            <span th:unless="${user.authorities.stream().findFirst().get().getAuthority() == 'USER'}">Administrador</span>
+                        </td>
+                        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy - HH:mm')}"></td>
+                        <td th:text="${#temporals.format(user.updatedAt, 'dd/MM/yyyy - HH:mm')}"></td>
+                        <td th:text="${user.active} ? 'Sim' : 'Não'"></td>
+                        <td style="white-space: nowrap">
+                            <a th:if="${user.authorities.stream().findFirst().get().getAuthority() == 'USER'}"
+                               th:href="@{'/users/' + ${user.id} + '/admin'}"
+                               class="btn btn-primary btn-sm"
+                               onclick="return confirm('Deseja realmente tornar o usuário administrador?')">Tornar administrador</a>
+                            <a th:if="${user.active}"
+                               th:href="@{'/users/' + ${user.id} + '/disable'}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Deseja realmente desativar o usuário?')">Desativar</a>
+                            <a th:unless="${user.active}"
+                               th:href="@{'/users/' + ${user.id} + '/activate'}"
+                               class="btn btn-success btn-sm"
+                               onclick="return confirm('Deseja realmente ativar o usuário?')">Ativar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{base :: pagination(currentPage=${currentPage}, firstPageToShow=${firstPageToShow}, lastPageToShow=${lastPageToShow}, hasPrevious=${hasPrevious}, hasNext=${hasNext}, pageToRedirect='/users')}"></div>
+    </div>
+</body>
+</html>

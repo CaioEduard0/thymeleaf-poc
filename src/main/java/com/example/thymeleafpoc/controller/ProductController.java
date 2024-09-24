@@ -1,13 +1,17 @@
 package com.example.thymeleafpoc.controller;
 
+import com.example.thymeleafpoc.dto.OrderDTO;
 import com.example.thymeleafpoc.dto.ProductDTO;
 import com.example.thymeleafpoc.mapper.ProductMapper;
 import com.example.thymeleafpoc.model.Product;
+import com.example.thymeleafpoc.model.User;
 import com.example.thymeleafpoc.service.ProductService;
 import com.example.thymeleafpoc.utils.PageUtils;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,10 +33,18 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public String findAll(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search) {
+    public String findAll(Model model,
+                          @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "") String search,
+                          @AuthenticationPrincipal User user,
+                          HttpSession session) {
         Page<Product> products = productService.findAll(page, search);
+        user.getAuthorities().stream().findFirst().ifPresent(authority -> model.addAttribute("authority", authority));
         model.addAttribute("products", products);
-        PageUtils.formatPages(products, model);
+        if (session.getAttribute("orderDTO") == null) {
+            session.setAttribute("orderDTO", new OrderDTO());
+        }
+        PageUtils.format(products, model);
         return "product/list";
     }
 
@@ -58,7 +71,7 @@ public class ProductController {
         return "product/update";
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, @ModelAttribute @Valid ProductDTO productDTO, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             return "product/update";
@@ -70,6 +83,20 @@ public class ProductController {
     @GetMapping("/{id}")
     public String delete(@PathVariable Long id) {
         productService.delete(id);
+        return REDIRECT_PRODUCTS;
+    }
+
+    @GetMapping("{id}/add-to-cart")
+    public String addToCart(@PathVariable Long id, HttpSession session) {
+        OrderDTO orderDTO = (OrderDTO) session.getAttribute("orderDTO");
+        orderDTO.getProductsIds().add(id);
+        return REDIRECT_PRODUCTS;
+    }
+
+    @GetMapping("{id}/remove-from-cart")
+    public String removeFromCart(@PathVariable Long id, HttpSession session) {
+        OrderDTO orderDTO = (OrderDTO) session.getAttribute("orderDTO");
+        orderDTO.getProductsIds().remove(id);
         return REDIRECT_PRODUCTS;
     }
 }
