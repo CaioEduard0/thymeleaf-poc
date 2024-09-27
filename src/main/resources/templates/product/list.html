@@ -15,6 +15,7 @@
                     </div>
                 </div>
             </form>
+            <a th:if="${#strings.equals(authority, 'ADMIN')}" class="btn btn-warning" href="/products/charts">Gráficos</a>
             <a th:if="${#strings.equals(authority, 'USER')}" class="btn btn-warning" th:href="@{/orders/checkout}">Checkout</a>
             <a class="btn btn-outline-danger" th:href="@{/}">Voltar</a>
         </div>

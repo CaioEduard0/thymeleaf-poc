@@ -1,5 +1,6 @@
 package com.example.thymeleafpoc.repository;
 
+import com.example.thymeleafpoc.enums.Category;
 import com.example.thymeleafpoc.model.Product;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -32,4 +36,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     """)
     @Modifying
     void delete(@NonNull Long id);
+
+    @Query(value = """
+        select p.price from Product p where p.active = true
+    """)
+    List<BigDecimal> getPrices();
+
+    @Query(value = """
+        select p.category from Product p where p.active = true
+    """)
+    List<Category> getCategories();
 }
