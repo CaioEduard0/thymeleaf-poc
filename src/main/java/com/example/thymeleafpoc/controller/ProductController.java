@@ -2,6 +2,7 @@ package com.example.thymeleafpoc.controller;
 
 import com.example.thymeleafpoc.dto.OrderDTO;
 import com.example.thymeleafpoc.dto.ProductDTO;
+import com.example.thymeleafpoc.enums.Category;
 import com.example.thymeleafpoc.mapper.ProductMapper;
 import com.example.thymeleafpoc.model.Product;
 import com.example.thymeleafpoc.model.User;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
@@ -98,5 +101,23 @@ public class ProductController {
         OrderDTO orderDTO = (OrderDTO) session.getAttribute("orderDTO");
         orderDTO.getProductsIds().remove(id);
         return REDIRECT_PRODUCTS;
+    }
+
+    @GetMapping("/charts")
+    public String charts(Model model) {
+        Map<String, Integer> pricesByRange = productService.getPricesByRange();
+        Map<String, Integer> categories = productService.getCategoriesQuantity();
+        model.addAttribute("priceRange", pricesByRange.keySet());
+        model.addAttribute("quantityByPriceRange", pricesByRange.values());
+        if (categories.containsKey(Category.CLOTHES.getName())) {
+            model.addAttribute("clothesQuantity", categories.get(Category.CLOTHES.getName()));
+        }
+        if (categories.containsKey(Category.ELECTRONICS.getName())) {
+            model.addAttribute("electronicsQuantity", categories.get(Category.ELECTRONICS.getName()));
+        }
+        if (categories.containsKey(Category.FURNITURE.getName())) {
+            model.addAttribute("furnitureQuantity", categories.get(Category.FURNITURE.getName()));
+        }
+        return "product/chart";
     }
 }
